@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "project": {
+      "title": "Project",
+      "description": "A workspace project or goal",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "deadline": { "type": "string" },
+        "riskLevel": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+        "completionProbability": { "type": "number" },
+        "recoveryRecommendation": { "type": "string" }
+      },
+      "required": ["id", "name", "createdAt"]
+    },
+    "milestone": {
+      "title": "Milestone",
+      "description": "A progress milestone for a project",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "projectId": { "type": "string" },
+        "title": { "type": "string" },
+        "order": { "type": "number" },
+        "completed": { "type": "boolean" }
+      },
+      "required": ["id", "projectId", "title", "order", "completed"]
+    },
+    "task": {
+      "title": "Task",
+      "description": "An actionable item or task",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "projectId": { "type": "string" },
+        "milestoneId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] },
+        "estimatedDuration": { "type": "number" },
+        "durationMinutes": { "type": "number" },
+        "dependencies": { "type": "array" },
+        "deadline": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "scheduledTime": { "type": "string" },
+        "sender": { "type": "string" },
+        "attachments": { "type": "array" }
+      },
+      "required": ["id", "title", "completed", "priority", "estimatedDuration", "createdAt"]
+    },
+    "studyPlan": {
+      "title": "StudyPlan",
+      "description": "An AI-generated syllabus or study plan",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "subject": { "type": "string" },
+        "syllabus": { "type": "string" },
+        "weeklyTargetHours": { "type": "number" },
+        "examDate": { "type": "string" },
+        "examReadinessScore": { "type": "number" },
+        "subjectBreakdown": { "type": "string" },
+        "dailyPlan": { "type": "array" },
+        "weeklyTargets": { "type": "array" },
+        "revisionSchedule": { "type": "array" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["id", "subject", "syllabus", "weeklyTargetHours", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/projects/{projectId}": {
+      "schema": "project",
+      "description": "User's projects"
+    },
+    "/users/{userId}/milestones/{milestoneId}": {
+      "schema": "milestone",
+      "description": "Project milestones"
+    },
+    "/users/{userId}/tasks/{taskId}": {
+      "schema": "task",
+      "description": "Workspace tasks"
+    },
+    "/users/{userId}/studyPlans/{studyPlanId}": {
+      "schema": "studyPlan",
+      "description": "AI-generated study plans"
+    }
+  }
+}

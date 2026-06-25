@@ -1,0 +1,6 @@
+{
+  "name": "IDoManage",
+  "description": "Your AI Chief of Staff: an intelligent task board operating system that helps break down work, prioritize tasks, predict risks, and recommend next actions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
