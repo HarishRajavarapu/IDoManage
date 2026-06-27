@@ -9,7 +9,9 @@ import {
   Moon, 
   Monitor, 
   Check,
-  Palette
+  Palette,
+  Download,
+  FileText
 } from "lucide-react";
 import { motion } from "motion/react";
 import { ThemePreset, ThemeMode, THEME_PRESETS } from "../utils/theme";
@@ -287,6 +289,38 @@ export default function Settings({
             >
               Sign Out & End Session
             </button>
+          </div>
+
+          {/* Submission Documents Deliverables */}
+          <div className="bg-[#FEFCE8] border-4 border-slate-800 rounded-3xl p-6 shadow-[4px_4px_0px_0px_#1e293b] space-y-4">
+            <div className="flex items-center gap-2 border-b-2 border-dashed border-slate-200 pb-3">
+              <FileText className="w-5 h-5 text-indigo-600" />
+              <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest text-left">Submission Assets</h3>
+            </div>
+            
+            <p className="text-xs text-slate-600 leading-relaxed font-semibold text-left">
+              Get official, pre-populated project documentation for your submission. Includes Selected Problem, Solution Overview, Features, Uniqueness, and Google stack alignments.
+            </p>
+
+            <div className="flex flex-col gap-2 pt-1">
+              <a 
+                href="/api/download-submission-doc?format=html" 
+                target="_blank"
+                rel="noreferrer"
+                className="w-full py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white border-2 border-slate-800 text-xs font-black rounded-2xl transition-colors cursor-pointer text-center shadow-[2px_2px_0px_0px_#1e293b] flex items-center justify-center gap-2"
+              >
+                <Download className="w-4.5 h-4.5" />
+                <span>Export & Print PDF</span>
+              </a>
+              <a 
+                href="/api/download-submission-doc?format=md" 
+                download="IDoManage_Submission_Documentation.md"
+                className="w-full py-2.5 bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-800 text-xs font-black rounded-2xl transition-colors cursor-pointer text-center shadow-[2px_2px_0px_0px_#1e293b] flex items-center justify-center gap-2"
+              >
+                <FileText className="w-4.5 h-4.5" />
+                <span>Download Markdown (.md)</span>
+              </a>
+            </div>
           </div>
         </div>
 

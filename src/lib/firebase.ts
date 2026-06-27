@@ -39,14 +39,17 @@ const app = initializeApp(firebaseConfig);
 // Explicitly use the Firestore Database ID from metadata instructions
 export const db = getFirestore(app, "ai-studio-75190510-99f8-448c-b13b-a7d60d904676");
 export const auth = getAuth(app);
+
+// Basic Google Auth Provider (Standard profile & email scopes - ZERO unverified warnings)
 export const googleProvider = new GoogleAuthProvider();
 
-// Standard OIDC scopes for calendar, drive, gmail
-googleProvider.addScope("https://www.googleapis.com/auth/calendar");
-googleProvider.addScope("https://www.googleapis.com/auth/gmail.readonly");
-googleProvider.addScope("https://www.googleapis.com/auth/gmail.send");
-googleProvider.addScope("https://www.googleapis.com/auth/drive.readonly");
-googleProvider.addScope("https://www.googleapis.com/auth/drive.file");
+// Advanced Google Workspace Auth Provider (Contains sensitive scopes, used optionally inside the app)
+export const workspaceProvider = new GoogleAuthProvider();
+workspaceProvider.addScope("https://www.googleapis.com/auth/calendar");
+workspaceProvider.addScope("https://www.googleapis.com/auth/gmail.readonly");
+workspaceProvider.addScope("https://www.googleapis.com/auth/gmail.send");
+workspaceProvider.addScope("https://www.googleapis.com/auth/drive.readonly");
+workspaceProvider.addScope("https://www.googleapis.com/auth/drive.file");
 
 export {
   collection,

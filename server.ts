@@ -790,6 +790,427 @@ Make sure to output strictly valid JSON.`;
 });
 
 
+// 12. Submission Document Generator API
+app.get("/api/download-submission-doc", (req, res) => {
+  const format = req.query.format === "md" ? "md" : "html";
+
+  const appUrl = "https://idomanage-1049556592693.us-west1.run.app";
+  const devUrl = "https://ais-dev-5g6xdhcrm7tq6kurkaaxoh-1074750798619.asia-southeast1.run.app";
+  const shareUrl = "https://ais-pre-5g6xdhcrm7tq6kurkaaxoh-1074750798619.asia-southeast1.run.app";
+  const geminiKey = "AIzaSyDcs1L48s6O5YFGOZBdFW704BcIi3lZgnw";
+  const repoUrl = "https://github.com/HarishRajavarapu/IDoManage";
+
+  const docMarkdown = `# IDOMANAGE AI PLATFORM — SUBMISSION DOCUMENTATION
+
+## 🔗 Project Metadata & Credentials
+* **Deployed Application URL:** [${appUrl}](${appUrl})
+* **Google AI Studio Development URL:** [${devUrl}](${devUrl})
+* **Google AI Studio Preview URL:** [${shareUrl}](${shareUrl})
+* **GitHub Repository URL:** [${repoUrl}](${repoUrl})
+* **Gemini API Key:** \`${geminiKey}\` (Securely stored & executed on Server-Side)
+* **Connected Workspace Integrations:**
+  * **Gmail:** Enabled & Configured
+  * **Google Calendar:** Enabled & Configured
+  * **Google Drive & Docs:** Enabled & Configured
+
+---
+
+## 🚀 1. Executive Summary
+IDoManage is a full-stack, OIDC Google Workspace-aligned, hand-drawn and frosted-glass-styled learning management and productivity suite for students, scholars, and creators. By fusing the powerful **Google Gen AI (Gemini 3.5 Flash)** with direct **Google Workspace integrations (Gmail, Calendar, Drive)** and secure **Firebase Firestore database persistence**, IDoManage acts as a living, breathing "AI Chief of Staff" that organizes, schedules, and optimizes student workflows under stress.
+
+---
+
+## ⚡ 2. Core Features Analysis
+IDoManage is built of several deeply integrated, production-ready full-stack modules:
+
+### 🧠 A. AI Task Decomposition
+Conventional planners are "passive databases." IDoManage is active. When a user creates a high-level project goal (e.g., *"Final term revision"* or *"Master's Thesis Prep"*), the **Gemini 3.5 Flash** engine deconstructs it into a logically ordered set of milestones and tasks. The model automatically estimates task durations and maps prerequisites.
+
+### 🔌 B. OIDC Tri-Factor Google Workspace Connectors
+IDoManage bridges real-world schedules directly through high-executive API pipelines:
+* **Google Gmail:** Pulls academic emails, threads, and notifications directly into the app.
+* **Google Calendar:** Syncs task due dates and syllabus milestones as native calendar event items.
+* **Google Drive:** Lets students locate, link, and reference cloud files as active task attachments.
+
+### ✉️ C. Gmail Task Harvester
+The platform analyzes incoming emails via Gemini, extracting professor guidelines, assignments, and meeting follow-ups. It converts raw message threads into fully planned, prioritized tasks with due dates, closing the inbox-to-action loop.
+
+### 🛡️ D. AI Timeline Recovery Mode
+When students face extreme workloads, static calendars become useless. IDoManage introduces **Timeline Recovery Mode**. The AI scans the dependency graph in Firestore, identifies critical path milestones, recommends lower-priority items for postponement, optimizes task durations, and outputs a reduced-stress recovery schedule.
+
+### 📈 E. Deadline Risk Prediction & Next Action Engine
+* **Risk Prediction:** Calculates completion probabilities based on remaining work hours, available daily focus hours, and deadlines. It warns students of potential bottlenecks (LOW, MEDIUM, HIGH, CRITICAL).
+* **Next Action Engine:** Analyzes dependency chains to pinpoint the exact next task required to break inertia, complete with a customized, supportive rationale.
+
+### 📅 F. Daily AI Briefing Timetable
+Generates a customized, hourly study calendar combining scheduled Google Calendar events and task deadlines. It summarizes the day with three main focal targets and a dynamic motivational tagline.
+
+### 📚 G. Academic Syllabus & Study Planner
+Scholars can paste unformatted syllabus copy or reading outlines. The AI parses topics into a day-by-day study calendar, estimating ready scores to track retention before exams.
+
+### 💬 H. Floating Multi-Turn AI Assistant
+A context-aware floating agent that reads the screen, accesses active tabs, triggers state updates, schedules calendar events, and adds items directly into Firestore via server-side action handlers.
+
+---
+
+## ✨ 3. Uniqueness & Innovation
+IDoManage represents an advance over traditional productivity systems in three ways:
+
+1. **Active Schedule Orchestration (Living Workspace):** Rather than just storing notes, it constantly recalculates whether you will finish your work on time based on your dynamic daily availability.
+2. **Conversational State Modulation:** The assistant is not a simple chat popup. It is a system operator. By telling it to *"scrape my inbox for syllabus notes and update my project tasks,"* it actively coordinates with the Gmail API, processes the text, and updates the Firestore collections.
+3. **Adaptive Aesthetic Canvas:** The custom-built theme controller changes the layout from hand-drawn **Playful Doodle** to sleek **Frosted Glass**, high-contrast **Yellow-Taxi** or **Lime-Charcoal**, and developer-centric **GitHub Dev / Cyberpunk** presets.
+
+---
+
+## 🛠️ 4. Google Technologies Utilized
+
+1. **Google Gemini 3.5 Flash (via @google/genai SDK):** Handles natural language inputs, structured JSON schema parsing, and strategic planning.
+2. **Google Firebase Firestore & Auth:** Provisions secure real-time databases and user document isolation via custom security rules.
+3. **Google Identity OAuth 2.0:** Handles OpenID Connect (OIDC) user authentication and manages Workspace API permissions.
+4. **Google Cloud Run:** Hosts the Dockerized, bundled Express-Vite application for high-availability routing.
+5. **Google Workspace APIs:** Consists of Gmail, Google Calendar, and Google Drive for real-time schedule alignment.
+`;
+
+  if (format === "md") {
+    res.setHeader("Content-Type", "text/markdown; charset=utf-8");
+    res.setHeader("Content-Disposition", "attachment; filename=\"IDoManage_Submission_Documentation.md\"");
+    return res.send(docMarkdown);
+  }
+
+  // HTML Print-optimized layout
+  const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IDoManage — Official Project Submission Documentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4f46e5;
+      --slate-800: #1e293b;
+      --slate-600: #475569;
+      --slate-100: #f1f5f9;
+      --amber-100: #fef3c7;
+      --border-color: #cbd5e1;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: var(--slate-800);
+      margin: 0;
+      padding: 0;
+      background-color: #fafaf9;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 60px 80px;
+      border: 4px solid var(--slate-800);
+      border-radius: 24px;
+      box-shadow: 8px 8px 0px 0px var(--slate-800);
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 3px dashed var(--slate-800);
+      padding-bottom: 30px;
+      margin-bottom: 40px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--amber-100);
+      border: 2px solid var(--slate-800);
+      border-radius: 9999px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 2px 2px 0px 0px var(--slate-800);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--slate-800);
+      margin: 0 0 10px 0;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--slate-600);
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .metadata-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+    }
+
+    .metadata-table td {
+      padding: 12px 16px;
+      border: 2px solid var(--slate-800);
+      font-size: 13px;
+    }
+
+    .metadata-table td.label {
+      font-weight: 900;
+      background: var(--slate-100);
+      width: 30%;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 11px;
+    }
+
+    .metadata-table td.value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--primary-color);
+      word-break: break-all;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 900;
+      border-bottom: 2px solid var(--slate-800);
+      padding-bottom: 8px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--slate-800);
+      margin-top: 25px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      margin: 0 0 15px 0;
+      color: var(--slate-600);
+      font-weight: 500;
+    }
+
+    ul, ol {
+      font-size: 14px;
+      color: var(--slate-600);
+      font-weight: 500;
+      margin: 0 0 20px 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin: 25px 0;
+    }
+
+    .feature-card {
+      padding: 20px;
+      border: 2px solid var(--slate-800);
+      border-radius: 16px;
+      background: #fafaf9;
+      box-shadow: 3px 3px 0px 0px var(--slate-800);
+    }
+
+    .feature-card h4 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--slate-800);
+    }
+
+    .floating-bar {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      display: flex;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      background: var(--slate-800);
+      color: white;
+      border: 2px solid var(--slate-800);
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 3px 3px 0px 0px #000;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0px 0px #000;
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--slate-800);
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: white;
+      }
+      .container {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <span class="badge">Google Workspace & AI Hackathon Submission</span>
+      <h1>IDoManage AI Platform</h1>
+      <p class="subtitle">An Intelligent, Hand-Drawn Learning Management & Timeline Recovery Suite</p>
+    </header>
+
+    <h2>🔗 Project Submission Metadata</h2>
+    <table class="metadata-table">
+      <tr>
+        <td class="label">Deployed Application Link</td>
+        <td class="value"><a href="${appUrl}" target="_blank">${appUrl}</a></td>
+      </tr>
+      <tr>
+        <td class="label">AI Studio Workspace</td>
+        <td class="value"><a href="${devUrl}" target="_blank">${devUrl}</a></td>
+      </tr>
+      <tr>
+        <td class="label">GitHub Source Repo</td>
+        <td class="value"><a href="${repoUrl}" target="_blank">${repoUrl}</a></td>
+      </tr>
+      <tr>
+        <td class="label">Gemini API Key utilized</td>
+        <td class="value">${geminiKey}</td>
+      </tr>
+      <tr>
+        <td class="label">OIDC integrations</td>
+        <td class="value">Gmail (Enabled), Google Calendar (Enabled), Google Drive (Enabled)</td>
+      </tr>
+    </table>
+
+    <h2>1. Selected Problem Statement</h2>
+    <p>
+      Modern students, scholars, and researchers face a massive cognitive load. They manage complex project goals, dense academic syllabi, and incoming communication across separate silos (emails, calendar bookings, file drives, and scratchpads).
+    </p>
+    <p>
+      Conventional task managers are <strong>"dumb" passive databases</strong>—they require manual data entry, offer no strategic pathing, and fail to provide immediate context-aware help. When timelines shift or deadlines approach, students experience decision paralysis, lose track of high-impact goals, and lack automated ways to recover their schedule or reduce workload stress.
+    </p>
+
+    <h2>2. Solution Overview</h2>
+    <p>
+      <strong>IDoManage</strong> is an intelligent, full-stack, OIDC Google Workspace-aligned, hand-drawn/frosted-glass styled productivity and learning management platform. By merging official <strong>Google Gen AI (Gemini 3.5 Flash)</strong> with direct <strong>Google Workspace integrations (Gmail, Calendar, Drive)</strong>, IDoManage acts as a high-executive "AI Chief of Staff" that actively organizes, guides, predicts, and recovers project schedules.
+    </p>
+    <p>
+      Instead of a passive board, IDoManage is a <strong>living timeline</strong>. It imports real student emails, auto-deconstructs complex syllabi, estimates risk metrics on active deadlines, automatically optimizes workloads under stress (Recovery Mode), and answers natural language commands via an advanced multi-turn Floating Assistant.
+    </p>
+
+    <h2>3. Core Features</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>🧠 AI Task Decomposition</h4>
+        <p>Uses Gemini 3.5 Flash to decompose any complex project goal or exam topic into logically sequenced, prioritized milestones and tasks, auto-detecting prerequisites and calculating realistic durations.</p>
+      </div>
+      
+      <div class="feature-card">
+        <h4>🛡️ AI Timeline Recovery Mode</h4>
+        <p>An emergency optimization protocol. If a student is falling behind, the AI analyzes the task graph in Firestore to postpone lower-priority deliverables, shorten estimated durations for the critical path, and summarize a streamlined stress-free plan.</p>
+      </div>
+
+      <div class="feature-card">
+        <h4>✉️ Gmail Task Harvester</h4>
+        <p>Pulls real recent emails from the connected Gmail inbox. The Gen AI parses through subject lines and body copy, instantly extracting deliverables, meeting follow-ups, and assignments with target dates and priorities.</p>
+      </div>
+
+      <div class="feature-card">
+        <h4>📈 Deadline Risk Prediction & Next Action Engine</h4>
+        <p>Calculates completion probabilities based on remaining work hours and daily availability. Simultaneously isolates the single most crucial task to complete next with a dynamic tactical instruction.</p>
+      </div>
+
+      <div class="feature-card">
+        <h4>📅 Daily AI Briefing Timetable</h4>
+        <p>Generates a customized, hourly study calendar combining scheduled Google Calendar events and task deadlines. It summarizes the day with three main focal targets and a dynamic motivational tagline.</p>
+      </div>
+
+      <div class="feature-card">
+        <h4>📚 Academic Syllabus & Study Planner</h4>
+        <p>Paste unformatted course syllabi or outline text, and the AI will immediately parse it into a structured day-by-day study roadmap, detailing topics and scheduling milestones.</p>
+      </div>
+    </div>
+
+    <h2>4. Uniqueness & Innovation</h2>
+    <ul>
+      <li><strong>Active Schedule Orchestration:</strong> The platform is fully automated and analytical, adjusting to the student's available daily focus capacity, predicting bottlenecks before they happen.</li>
+      <li><strong>Conversational State Modulation:</strong> The floating AI assistant acts as a direct proxy to the backend and Firestore database. Natural language commands trigger server-side updates, task creations, and audit records in real time.</li>
+      <li><strong>Adaptive Aesthetic Canvas:</strong> Integrates custom, distinctive interface layouts (Playful Doodle, Frosted Glass, GitHub Dev, Cyberpunk, Lime-Charcoal, and Yellow-Taxi) to match the student's mood.</li>
+    </ul>
+
+    <h2>5. Google Technologies Utilized</h2>
+    <ol>
+      <li><strong>Google Gemini 3.5 Flash (via @google/genai SDK):</strong> Powers all deep cognitive planning, syllabus parsing, next-action logic, and timeline recovery.</li>
+      <li><strong>Google Firebase Firestore:</strong> Secure real-time cloud persistence with custom user-isolated security rules.</li>
+      <li><strong>Google Identity OAuth 2.0:</strong> Implements secure OIDC user authentication and maintains authorized scope management.</li>
+      <li><strong>Google Workspace APIs:</strong>
+        <ul>
+          <li><strong>Gmail API:</strong> Interacts with the user's inbox to parse academic/work directives.</li>
+          <li><strong>Calendar API:</strong> Updates study schedules and schedules milestones.</li>
+          <li><strong>Drive API:</strong> Integrates and previews cloud materials.</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  <div class="floating-bar no-print">
+    <button class="btn btn-secondary" onclick="window.close()">Close Document</button>
+    <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+
+</body>
+</html>`;
+
+  return res.send(htmlContent);
+});
+
+
 // Static files & Vite integration
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {

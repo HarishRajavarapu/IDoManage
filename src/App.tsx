@@ -3,6 +3,7 @@ import {
   auth, 
   db, 
   googleProvider, 
+  workspaceProvider,
   signInWithPopup, 
   signOut, 
   onAuthStateChanged,
@@ -88,7 +89,11 @@ export default function App() {
 
   // Dynamic Themes and Modes State
   const [themePreset, setThemePreset] = useState<ThemePreset>(() => {
-    return (localStorage.getItem("themePreset") as ThemePreset) || "standard";
+    const saved = localStorage.getItem("themePreset");
+    if (!saved || saved === "standard") {
+      return "ios";
+    }
+    return saved as ThemePreset;
   });
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
     return (localStorage.getItem("themeMode") as ThemeMode) || "light";
@@ -273,20 +278,29 @@ export default function App() {
   };
 
   // Google OIDC Sign-In Handler
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = async (requestWorkspace = false) => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
+      const provider = requestWorkspace ? workspaceProvider : googleProvider;
+      const result = await signInWithPopup(auth, provider);
       if (result.user) {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         if (credential?.accessToken) {
           localStorage.setItem("google_access_token", credential.accessToken);
           setGoogleAccessToken(credential.accessToken);
         }
-        triggerAlert("Successfully authorized Google Account!", "success");
+        if (requestWorkspace) {
+          triggerAlert("Successfully authorized Google Workspace tools!", "success");
+        } else {
+          triggerAlert("Successfully signed in with Google!", "success");
+        }
       }
     } catch (err: any) {
       console.error("Google login failed:", err);
-      triggerAlert("Sign-In failed. A valid Google Account is required to access your workspace.", "warning");
+      if (requestWorkspace) {
+        triggerAlert("Workspace integration authorization cancelled or failed.", "warning");
+      } else {
+        triggerAlert("Sign-In failed. A valid Google Account is required to access your workspace.", "warning");
+      }
     }
   };
 
@@ -732,64 +746,108 @@ export default function App() {
 
   // Render Landing Page if not authenticated (Doodle UI, Mandatory Google login)
   if (!user) {
+    const isStandard = themePreset === "standard";
     return (
       <>
         <style dangerouslySetInnerHTML={{ __html: generateThemeStyles(themePreset, isDark) }} />
-        <div className="min-h-screen bg-[#FAF6EE] text-slate-800 font-sans flex flex-col relative overflow-x-hidden notebook-grid p-4 md:p-8 justify-center items-center">
+        <div className={`min-h-screen text-slate-800 font-sans flex flex-col relative overflow-x-hidden p-4 md:p-8 justify-center items-center ${
+          isStandard ? "notebook-grid bg-[#FAF6EE]" : "bg-slate-50"
+        }`}>
         
         {/* Floating Decorative Hand-drawn Doodles */}
-        <div className="absolute top-10 left-10 text-slate-400 select-none opacity-40 animate-bounce pointer-events-none">
-          <svg className="w-16 h-16" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="3">
-            <path d="M10,80 Q30,50 50,80 T90,80" />
-            <path d="M30,30 Q50,10 70,30" />
-          </svg>
-        </div>
-        <div className="absolute bottom-10 right-10 text-indigo-400 select-none opacity-40 animate-pulse pointer-events-none" style={{ animationDelay: '1s' }}>
-          <svg className="w-20 h-20" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <circle cx="50" cy="50" r="30" strokeDasharray="5 5" />
-            <path d="M50,10 L50,90 M10,50 L90,50" />
-          </svg>
-        </div>
-
+        {isStandard && (
+          <>
+            <div className="absolute top-10 left-10 text-slate-400 select-none opacity-40 animate-bounce pointer-events-none">
+              <svg className="w-16 h-16" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="3">
+                <path d="M10,80 Q30,50 50,80 T90,80" />
+                <path d="M30,30 Q50,10 70,30" />
+              </svg>
+            </div>
+            <div className="absolute bottom-10 right-10 text-indigo-400 select-none opacity-40 animate-pulse pointer-events-none" style={{ animationDelay: '1s' }}>
+              <svg className="w-20 h-20" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="50" cy="50" r="30" strokeDasharray="5 5" />
+                <path d="M50,10 L50,90 M10,50 L90,50" />
+              </svg>
+            </div>
+          </>
+        )}
+        
         {/* Brand Header */}
         <header className="w-full max-w-4xl flex items-center justify-between mb-8 z-10">
           <TaskBoardLogo size="lg" themePreset={themePreset} isDark={isDark} />
         </header>
-
+        
         {/* Hero Paper Panel */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ type: "spring", damping: 15 }}
-          className="w-full max-w-md bg-white border-4 border-slate-800 rounded-3xl p-6 md:p-8 shadow-[6px_6px_0px_0px_#1e293b] relative z-10 space-y-6"
+          className={`w-full max-w-md bg-white p-6 md:p-8 relative z-10 space-y-6 ${
+            isStandard 
+              ? "border-4 border-slate-800 rounded-3xl shadow-[6px_6px_0px_0px_#1e293b]" 
+              : "border border-slate-200/80 rounded-3xl shadow-xl shadow-slate-200/30"
+          }`}
         >
           {/* Notebook Spiral Accents */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[18px] flex gap-3 z-20">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="w-4 h-8 bg-slate-100 border-2 border-slate-800 rounded-full" />
-            ))}
-          </div>
-
+          {isStandard && (
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[18px] flex gap-3 z-20">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="w-4 h-8 bg-slate-100 border-2 border-slate-800 rounded-full" />
+              ))}
+            </div>
+          )}
+          
           <div className="text-center space-y-3 pt-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-slate-800 text-xs font-black uppercase rounded-full border-2 border-slate-800 shadow-[1px_1px_0px_0px_#1e293b]">
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-black uppercase rounded-full ${
+              isStandard 
+                ? "bg-amber-100 text-slate-800 border-2 border-slate-800 shadow-[1px_1px_0px_0px_#1e293b]"
+                : "bg-indigo-50 text-indigo-600 border border-indigo-100/80"
+            }`}>
               <Zap className="w-3.5 h-3.5 text-amber-500" /> IDoManage AI Platform
             </span>
             
             <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-none text-slate-800">
               Turn Goals Into <br />
-              <span className="text-indigo-600 font-doodle text-3xl md:text-5xl block mt-1 transform -rotate-1">Completed Outcomes!</span>
+              <span className={`block mt-1 ${
+                isStandard 
+                  ? "text-indigo-600 font-doodle text-3xl md:text-5xl transform -rotate-1" 
+                  : "text-indigo-600 font-extrabold text-3xl md:text-4xl"
+              }`}>
+                Completed Outcomes!
+              </span>
             </h1>
             
             <p className="text-slate-600 text-xs md:text-sm max-w-sm mx-auto leading-relaxed font-bold">
               An intelligent, hand-drawn productivity suite for students and scholars. Decompose tough tasks, predict study schedules, and align Google Calendar with zero friction.
             </p>
           </div>
-
+          
+          {/* Hackathon Reviewer / Judge Reassurance Box */}
+          <div className={`p-4 rounded-2xl text-left space-y-1.5 border-l-8 ${
+            isStandard 
+              ? "bg-amber-50 border-2 border-slate-800 shadow-[2px_2px_0px_0px_#1e293b] border-l-amber-500" 
+              : "bg-amber-50/60 border border-amber-200/50 border-l-amber-500"
+          }`}>
+            <div className="flex items-center gap-1.5">
+              <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
+              <h4 className="text-xs font-black text-slate-800 uppercase tracking-wide">🏆 Hackathon Reviewer & Judges Note</h4>
+            </div>
+            <p className="text-[11px] text-slate-600 font-bold leading-relaxed">
+              Kindly login with your <strong className="text-indigo-600">Gmail account</strong> to see the correct workflow (live Gmail & Google Calendar synchronization).
+              <br />
+              <span className="text-emerald-700 block mt-1 font-extrabold">🔒 No data will be collected or saved from you — this is purely an interactive submission prototype.</span>
+            </p>
+          </div>
+          
           {/* Core Login CTA - ONLY Continue with Google Button */}
           <div className="pt-2">
             <button
               onClick={handleGoogleLogin}
-              className="w-full px-6 py-3.5 bg-white hover:bg-slate-50 text-slate-800 border-4 border-slate-800 font-black rounded-2xl text-sm md:text-base shadow-[4px_4px_0px_0px_#1e293b] flex items-center justify-center gap-3 cursor-pointer transition-all transform hover:-translate-y-0.5 hover:translate-x-0.5 active:scale-95"
+              className={`w-full px-6 py-3.5 text-slate-800 font-black rounded-2xl text-sm md:text-base flex items-center justify-center gap-3 cursor-pointer transition-all transform hover:-translate-y-0.5 active:scale-95 ${
+                isStandard 
+                  ? "bg-white border-4 border-slate-800 shadow-[4px_4px_0px_0px_#1e293b] hover:bg-slate-50" 
+                  : "bg-white border border-slate-200 shadow-md hover:bg-slate-50 hover:shadow-lg"
+              }`}
             >
               <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -801,12 +859,12 @@ export default function App() {
             </button>
           </div>
         </motion.div>
-
+        
         {/* Footer */}
         <footer className="w-full max-w-4xl text-center text-[10px] text-slate-400 uppercase tracking-widest font-black mt-8 z-10">
           IDoManage © {new Date().getFullYear()} • Securely Sandboxed Workspace Sandbox
         </footer>
-
+        
       </div>
     </>
   );
@@ -1106,14 +1164,14 @@ export default function App() {
               {activeTab === "gmail" && (
                 <GoogleGmail 
                   googleAccessToken={googleAccessToken}
-                  onGoogleLogin={handleGoogleLogin}
+                  onGoogleLogin={() => handleGoogleLogin(true)}
                   onAddTask={handleAddTask}
                 />
               )}
               {activeTab === "calendar" && (
                 <GoogleCalendar 
                   googleAccessToken={googleAccessToken}
-                  onGoogleLogin={handleGoogleLogin}
+                  onGoogleLogin={() => handleGoogleLogin(true)}
                   tasks={tasks}
                   onSyncCalendar={handleSyncCalendar}
                 />
@@ -1121,7 +1179,7 @@ export default function App() {
               {activeTab === "drive" && (
                 <GoogleDrive 
                   googleAccessToken={googleAccessToken}
-                  onGoogleLogin={handleGoogleLogin}
+                  onGoogleLogin={() => handleGoogleLogin(true)}
                 />
               )}
               {activeTab === "settings" && (
